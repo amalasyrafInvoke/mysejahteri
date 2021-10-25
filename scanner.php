@@ -3,7 +3,11 @@
 
 <head>
 
-  <?php include('./db.sql.php') ?>
+    <?php 
+      include('./db.sql.php');
+      // Start the session
+      session_start();
+    ?>
 
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -25,22 +29,40 @@
 
     <?php 
       $getdb = mysqli_select_db($mysqli, $db_db);
-      $details= $_POST['submitProfile'];
-      // echo $details;
-      $detailsArr = explode(' ', $details);
-
-      for ($i = 0; $i < count($detailsArr); $i++) {
-        echo $detailsArr[$i];
-        echo "<br>";
-      }
+      
+      $custEmail = $_SESSION['globalCustEmail'];
+      $custName = $_SESSION['globalCustName'];
+      $custInfo = null;
 
       // Fetch Customer Info
-      $sql = "SELECT * FROM Customers WHERE customer_email = '$detailsArr[1]'";
+      function fetchCustInfo() {
 
-      if ($result = $mysqli -> query($sql)) {
-        $row = $result -> fetch_all(MYSQLI_ASSOC);
-        $custInfo = $row[0];
-        // print_r($custInfo);
+        global $custEmail;
+        global $mysqli;
+        global $custInfo;
+
+        $sql = "SELECT * FROM Customers WHERE customer_email = '$custEmail'";
+  
+        if ($result = $mysqli -> query($sql)) {
+          $row = $result -> fetch_all(MYSQLI_ASSOC);
+          $custInfo = $row[0];
+        }
+      }
+
+      // calling this function to initial fetch of data
+      fetchCustInfo();
+
+      // Update Customer Info - Name
+      if (isset($_POST['edit-custInfo-btn'])) {
+        $custUpdateSql = "UPDATE Customers SET customer_name = '{$_POST['edit-cust-name']}' WHERE customer_email = '$custEmail'";
+        echo $custUpdateSql;
+        if ($mysqli->query($custUpdateSql) === TRUE) {
+          echo "<h6>Record updated successfully</h6>";
+          unset($_POST['edit-custInfo-btn']);
+          fetchCustInfo();
+        } else {
+          echo "Error: " . $custUpdateSql . "<br>" . $mysqli->error;
+        }
       }
 
       // Get all the Location listing
@@ -179,17 +201,17 @@
                         <div class="card_profile_back">
                             <div class="profile_back_card">
                                 <a href="#" class="cancel_btn cancel_profile"><img src="dist/images/svg/cancel_blue.svg" alt=""/></a>
-                                <div class="card_profile_content">
+                                <form action="" method="POST" class="card_profile_content">
                                     <div class="form_group form_name">
                                         <label class="form_lbl">Name</label>
-                                        <input type="text" class="form_txt_sm" value=<?php echo $custInfo['customer_name'] ?>>
+                                        <input type="text" class="form_txt_sm" name="edit-cust-name" value="<?php echo $custInfo['customer_name'] ?>">
                                     </div>
                                     <div class="form_group form_mobileno">
                                         <label class="form_lbl">Mobile Number</label>
                                         <div class="form_val"><?php echo $custInfo['customer_phoneNum'] ?></div>
                                     </div>
-                                </div>
-                                <button type="button" class="form_app_submit submit_profile btn_orange">Save</button>
+                                    <button type="submit" name="edit-custInfo-btn" class="form_app_submit submit_profile btn_orange">Save</button>
+                                </form>
                             </div>
                         </div>
                     </div>

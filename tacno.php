@@ -3,7 +3,11 @@
 
 <head>
 
-  <?php include('./db.sql.php') ?>
+    <?php 
+      include('./db.sql.php');
+      // Start the session
+      session_start();
+    ?>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Mysejahteri</title>
@@ -26,12 +30,16 @@
 
       $details= $_POST['submit-info'];
       $detailsArr = explode(' ', $details);
+      echo $_SESSION['globalCustEmail'];
+      echo "<br>";
+      echo $_SESSION["globalCustName"];
+      echo "<br>";
       // echo $detailsArr;
 
-      for ($i = 0; $i < count($detailsArr); $i++) {
-        echo $detailsArr[$i];
-        echo "<br>";
-      }
+      // for ($i = 0; $i < count($detailsArr); $i++) {
+      //   echo $detailsArr[$i];
+      //   echo "<br>";
+      // }
 
       $sql = "SELECT * FROM Customers WHERE customer_email = '$detailsArr[1]'";
 

@@ -2,7 +2,7 @@
   $db_host = 'localhost';
   $db_user = 'root';
   $db_password = 'root';
-  $db_db = 'day10';
+  $db_db = 'mysejahteri';
  
   $mysqli = @new mysqli(
     $db_host,

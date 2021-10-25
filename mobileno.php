@@ -3,7 +3,12 @@
 
 <head>
 
-    <?php include('./db.sql.php') ?>
+    <?php 
+      include('./db.sql.php');
+      // Start the session
+      session_start();
+    ?>
+    
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Mysejahteri</title>
@@ -34,6 +39,8 @@
 
                 $emailInfo = $_POST['email'];
                 $sql = "SELECT customer_phoneNum FROM Customers WHERE customer_email = '$emailInfo'";
+                $_SESSION["globalCustEmail"] = $emailInfo;
+                $_SESSION["globalCustName"] = $_POST['fname'];
 
                 if ($result = $mysqli -> query($sql)) {
                   if ($result->num_rows === 0) {
