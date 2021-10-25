@@ -46,6 +46,7 @@
         if ($result = $mysqli -> query($sql)) {
           $row = $result -> fetch_all(MYSQLI_ASSOC);
           $custInfo = $row[0];
+          $_SESSION['globalCustID'] = $custInfo['customer_id'];
         }
       }
 
@@ -66,7 +67,7 @@
       }
 
       // Get all the Location listing
-      $sql2 = "SELECT * FROM Location";
+      $sql2 = "SELECT * FROM Location INNER JOIN Company ON Location.company_id = Company.company_id";
 
       if ($result = $mysqli -> query($sql2)) {
         $locationListing = $result -> fetch_all(MYSQLI_ASSOC);
@@ -86,13 +87,24 @@
                 
                 <div class="horizontal_card card_scanner">
                     <div class="card_scanner_container">
-                    <div class="card_scanner_front">
-                        <div class="top_camera_placeholder"></div>
+                    <form action="scanner-back.php" method="POST" class="card_scanner_front">
+                        <div class="top_camera_placeholder">
+                          <div style="margin: 1rem auto;" class="scanner_desc_container">
+                            <h3>Choose A Location</h3>
+                              <select class='my-5' name="location-list" id="location-list">
+                                <?php
+                                foreach($locationListing as $loc) {
+                                  echo "<option value='{$loc['location_id']}'>{$loc['company_name']} - {$loc['company_branch']} </option>";
+                                }
+                                ?>
+                              </select>
+                          </div>
+                        </div>
                         <div class="btm_scanner_details">
                             <div class="scanner_desc_container">Scan the CVD QR code for instant Check-In</div>
                         </div>
-                        <div class="scanner_icon"><img src="dist/images/cvd_scanner_camera.png" alt=""/></div>
-                    </div>
+                        <button type="submit" class="scanner_icon"><img src="dist/images/cvd_scanner_camera.png" alt=""/></button>
+                    </form>
                     <div class="card_scanner_back card_thankyou">
                         <div class="voucher_container">
                             <a href="#" class="cancel_btn cancel_scanner"><img src="dist/images/cancel_blue.png" alt=""/></a>
