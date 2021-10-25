@@ -74,6 +74,29 @@
         // print_r($locationListing);
       }
 
+      // Get checkin details
+      $checkinDetails = null;
+      $custID = $_SESSION['globalCustID'];
+
+      // Fetch Check In Info
+      function fetchCheckInDetails() {
+        
+        global $checkinDetails;
+        global $mysqli;
+        global $custID;
+
+        $sql = "SELECT COUNT(checkin_id)checkin_count FROM Checkin  WHERE customer_id = $custID GROUP BY customer_id";
+
+        if ($result = $mysqli -> query($sql)) {
+          $row = $result -> fetch_all(MYSQLI_ASSOC);
+          $checkinDetails = $row[0];
+          // echo( $checkinDetails)['checkin_count'];
+        }
+      }
+
+      // calling this function to initial fetch of data
+      fetchCheckInDetails();
+
     ?>
 
     <div class="app__container">
@@ -249,7 +272,7 @@
                                 </div>
                                 <div class="form_group form_totalcheckin">
                                     <label class="form_lbl">Total Check-Ins</label>
-                                    <div class="form_val">-</div>
+                                    <div class="form_val"><?php echo $checkinDetails['checkin_count'] ?></div>
                                 </div>
                             </div>
                         </div>
@@ -410,17 +433,20 @@
                             <div class="checkin_legend">Number of Check-Ins</div>
                             <div class="checkin_calendar_container">
                                 <div id="datepicker_container"></div>
+                                <form style="display: flex; justify-content:center" action="activity-back.php" method="POST">
+                                  <button class="checkin_lbl" style="text-align: center; background-color: inherit; " type="submit">Check Your Check-In History</button>
+                                </form>
                             </div>
                             <div class="checkin_total_container">
                                 <div class="checkin_total_flex">
                                     <div class="checkin_lbl">Total Check-In This Month</div>
-                                    <div class="checkin_val">129</div>
+                                    <div class="checkin_val"><?php echo $checkinDetails['checkin_count'] ?></div>
                                 </div>
                             </div>
                             <div class="checkin_highest_container">
                                 <div class="checkin_highest_flex">
                                     <div class="checkin_lbl">Highest Check-In Day</div>
-                                    <div class="checkin_val">29 May 2020</div>
+                                    <div class="checkin_val">Data Not Available</div>
                                 </div>
                             </div>
                         </div>

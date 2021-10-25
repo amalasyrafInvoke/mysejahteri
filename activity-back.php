@@ -35,7 +35,7 @@
   $custID =  $_SESSION['globalCustID'];
 
   $locationSelected = $_POST['location-list'];
-  $checkinInfo = null;
+  $checkinInfo = array();
   $dateCreated = null;
   $date = null;
   $time = null;
@@ -50,12 +50,12 @@
     global $date;
     global $time;
 
-    $sql = "SELECT * FROM Checkin INNER JOIN Customers ON Customers.customer_id = Checkin.customer_id INNER JOIN Location ON Checkin.location_id = Location.location_id INNER JOIN Company ON Location.company_id = Company.company_id WHERE Customers.customer_email = '$custEmail' ORDER BY Checkin.checkin_date_created DESC";
+    $sql = "SELECT Company.company_name, Company.company_branch, Location.state, Checkin.checkin_date_created FROM Checkin INNER JOIN Customers ON Customers.customer_id = Checkin.customer_id INNER JOIN Location ON Checkin.location_id = Location.location_id INNER JOIN Company ON Location.company_id = Company.company_id WHERE Customers.customer_email = '$custEmail' ORDER BY Checkin.checkin_date_created DESC";
 
     if ($result = $mysqli -> query($sql)) {
       $row = $result -> fetch_all(MYSQLI_ASSOC);
-      $checkinInfo = $row[0];
-      $dateCreated = $row[0]['checkin_date_created'];
+      $checkinInfo = $row;
+      $dateCreated = $row[0]['cust_date_created'];
       //to split and format datetime into date & time
       $datetime = new DateTime($dateCreated);
       $date = $datetime->format('j F Y');
@@ -65,44 +65,46 @@
     }
   }
 
-  $insertCheckInSql = "INSERT INTO Checkin (location_id, customer_id) VALUES ($locationSelected, $custID)";
-
-  echo $insertCheckInSql;
-
-  if ($mysqli->query($insertCheckInSql) === TRUE) {
-    echo "<h4>New record created successfully</h4>";
-    fetchCheckInInfo();
-  } else {
-    echo "Error: " . $insertCheckInSql . "<br>" . $mysqli->error;
-  }
+  // calling this function for first time initialization
+  fetchCheckInInfo();
 
   ?>
 
   <div class="app__container">
     <div class="app__cards_wrapper scanner_active">
       <div class="app__cards_container">
-        <div class="card_title title_checkin">Check-In Information</div>
+        <div class="card_title title_checkin">Check-In Activity History</div>
 
         <div class="horizontal_card card_scanner">
-          <div class="card_scanner_container">
-            <div class="card_scanner_front">
-              <div class="voucher_container">
-                <a href="#" class="cancel_btn cancel_scanner"><img src="dist/images/cancel_blue.png" alt="" /></a>
-                <div class="thankyou_container">
-                  <div class="thankyou_title text-white mt-3">Thank You</div>
-                  <div class="thankyou_company_branch">
-                    <div class="thankyou_company"><?php echo $checkinInfo['company_name'] . " - " . $checkinInfo['company_branch'] ?></div>
-                    <div class="thankyou_branch"><?php echo $checkinInfo['state'] ?></div>
-                  </div>
-                  <div class="thankyou_datetime_checkin">
-                    <div class="thankyou_desc">You checked in at the location at</div>
-                    <div class="thankyou_datetime"><span class="thankyou_time"><?php echo $time ?> </span>, <span class="thankyou_date"><?php echo $date ?></span></div>
-                  </div>
-                  <form action="scanner.php" method="POST" class="thankyou_title text-white mt-3">
-                    <input style="background-color: inherit; color:white;" type="submit" value="Back">
-                  </form>
+          <div class="card_activity_container">
+          <div class="card_activity_front">
+              <div class="activity_container">
+                <div class="activity_details">
+                  <div class="calendar_day">Showing Latest Check-In First</div>
+                  <a href="scanner.php" class="cancel_btn cancel_activity"><img src="dist/images/svg/cancel_blue.svg" alt="" /></a>
                 </div>
+                <div class="activity_calendar_listing_container">
 
+                  <div class="calendar_rows_container">
+                    <?php 
+                      foreach ($checkinInfo as $info) {
+                        $dateCreated = $info['checkin_date_created'];
+                        //to split and format datetime into date & time
+                        $datetime = new DateTime($dateCreated);
+                        $date = $datetime->format('j F Y');
+                        $time = $datetime->format('g:i a');
+                        echo "
+                        <div class='calendar_row'>
+                          <div class='calendar_company'>{$info['company_name']} - {$info['company_branch']}</div>
+                          <div class='calendar_branch'>{$info['state']}</div>
+                          <div class='calendar_date'>$date</div>
+                          <div class='calendar_time'>$time</div>
+                        </div>
+                        ";
+                      }
+                    ?>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
