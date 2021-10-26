@@ -41,6 +41,7 @@
                 $sql = "SELECT customer_phoneNum FROM Customers WHERE customer_email = '$emailInfo'";
                 $_SESSION["globalCustEmail"] = $emailInfo;
                 $_SESSION["globalCustName"] = $_POST['fname'];
+                // echo $_SESSION["globalCustEmail"];
 
                 if ($result = $mysqli -> query($sql)) {
                   if ($result->num_rows === 0) {

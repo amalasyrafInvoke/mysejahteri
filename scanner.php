@@ -272,7 +272,7 @@
                                 </div>
                                 <div class="form_group form_totalcheckin">
                                     <label class="form_lbl">Total Check-Ins</label>
-                                    <div class="form_val"><?php echo $checkinDetails['checkin_count'] ?></div>
+                                    <div class="form_val"><?php echo $checkinDetails['checkin_count'] > 0 ? $checkinDetails['checkin_count'] : 0 ?></div>
                                 </div>
                             </div>
                         </div>
@@ -440,7 +440,7 @@
                             <div class="checkin_total_container">
                                 <div class="checkin_total_flex">
                                     <div class="checkin_lbl">Total Check-In This Month</div>
-                                    <div class="checkin_val"><?php echo $checkinDetails['checkin_count'] ?></div>
+                                    <div class="checkin_val"><?php echo $checkinDetails['checkin_count'] > 0 ? $checkinDetails['checkin_count'] : 0 ?></div>
                                 </div>
                             </div>
                             <div class="checkin_highest_container">

@@ -112,7 +112,7 @@
 
 
       </div>
-      <div class="navbar_btm_container">
+      <!-- <div class="navbar_btm_container">
         <div class="navbar_menu navbar_info">
           <div class="navbar_icon icon_info"></div>
           <div class="navbar_caption">Info</div>
@@ -132,7 +132,7 @@
           <div class="navbar_icon icon_activity"></div>
           <div class="navbar_caption">Activity</div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 

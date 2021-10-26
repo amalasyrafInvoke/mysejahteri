@@ -28,20 +28,20 @@
 
       $getdb = mysqli_select_db($mysqli, $db_db);
 
-      $details= $_POST['submit-info'];
-      $detailsArr = explode(' ', $details);
-      echo $_SESSION['globalCustEmail'];
-      echo "<br>";
-      echo $_SESSION["globalCustName"];
-      echo "<br>";
-      // echo $detailsArr;
+      // $details= $_POST['submit-info'];
+      // $detailsArr = explode(' ', $details);
+      $custEmail = $_SESSION['globalCustEmail'];
+      $custName = $_SESSION["globalCustName"];
+
+      // echo $custEmail;
 
       // for ($i = 0; $i < count($detailsArr); $i++) {
       //   echo $detailsArr[$i];
       //   echo "<br>";
       // }
 
-      $sql = "SELECT * FROM Customers WHERE customer_email = '$detailsArr[1]'";
+      $sql = "SELECT * FROM Customers WHERE customer_email = '$custEmail'";
+      echo $sql;
 
       if ($result = $mysqli -> query($sql)) {
         $row = $result -> fetch_all(MYSQLI_ASSOC);
@@ -52,7 +52,7 @@
           // Perform insert query to create new customer record
           $sql2 = 
           "INSERT INTO Customers (customer_email, customer_name, customer_phoneNum, customer_status) 
-          VALUES ('$detailsArr[1]', '$detailsArr[0]', {$_POST['phone']}, 0)
+          VALUES ('$custEmail', '$custName', {$_POST['phone']}, 0)
           ";
           if ($mysqli->query($sql2) === TRUE) {
             echo "<h4>New record created successfully</h4>";
@@ -60,7 +60,7 @@
             echo "Error: " . $sql . "<br>" . $mysqli->error;
           }
 
-          $getID = "SELECT customer_id FROM Customers WHERE customer_email = '$detailsArr[1]'";
+          $getID = "SELECT customer_id FROM Customers WHERE customer_email = '$custEmail'";
           if ($result = $mysqli -> query($sql)) {
             $row2 = $result -> fetch_all(MYSQLI_ASSOC);
             $custID2 = $row2[0]['customer_id'];
